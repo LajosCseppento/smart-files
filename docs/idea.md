@@ -41,7 +41,8 @@ Business logic:
 
 Data:
 
- * MongoDB
+ * In-memory objects + JSON serialisation
+ * Later: reactive data store
 
 Display:
 
