@@ -1,6 +1,37 @@
 
-# Created by https://www.gitignore.io/api/git,java,sonar,gradle,java-web,sonarqube,intellij+all
-# Edit at https://www.gitignore.io/?templates=git,java,sonar,gradle,java-web,sonarqube,intellij+all
+# Created by https://www.gitignore.io/api/git,java,sonar,gradle,angular,java-web,sonarqube,intellij+all
+# Edit at https://www.gitignore.io/?templates=git,java,sonar,gradle,angular,java-web,sonarqube,intellij+all
+
+### Angular ###
+## Angular ##
+# compiled output
+dist/
+tmp/
+app/**/*.js
+app/**/*.js.map
+
+# dependencies
+node_modules/
+bower_components/
+
+# IDEs and editors
+.idea/
+
+# misc
+.sass-cache/
+connect.lock/
+coverage/
+libpeerconnection.log/
+npm-debug.log
+testem.log
+typings/
+
+# e2e
+e2e/*.js
+e2e/*.map
+
+#System Files
+.DS_Store/
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -91,7 +122,6 @@ fabric.properties
 # Ignores the whole .idea folder and all .iml files
 # See https://github.com/joeblau/gitignore.io/issues/186 and https://github.com/joeblau/gitignore.io/issues/360
 
-.idea/
 
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
 
@@ -167,4 +197,4 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
-# End of https://www.gitignore.io/api/git,java,sonar,gradle,java-web,sonarqube,intellij+all
+# End of https://www.gitignore.io/api/git,java,sonar,gradle,angular,java-web,sonarqube,intellij+all
