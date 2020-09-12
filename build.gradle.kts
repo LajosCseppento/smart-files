@@ -1,14 +1,15 @@
 plugins {
     java
     jacoco
-    id("org.springframework.boot") version "2.2.6.RELEASE"
-    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    idea
+    id("org.springframework.boot") version "2.3.3.RELEASE"
+    id("io.spring.dependency-management") version "1.0.10.RELEASE"
 }
 
 group = "dev.lajoscseppento.smart-files"
 version = "0.1.0-SNAPSHOT"
 
-val guavaVersion = "28.2-jre"
+val guavaVersion = "29.0-jre"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_14
@@ -19,13 +20,13 @@ repositories {
     mavenCentral()
 }
 
-val developmentOnly by configurations.creating
-
-configurations {
-    runtimeClasspath {
-        extendsFrom(developmentOnly)
-    }
-}
+//val developmentOnly by configurations.creating
+//
+//configurations {
+//    runtimeClasspath {
+//        extendsFrom(developmentOnly)
+//    }
+//}
 
 dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
@@ -47,6 +48,16 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
 }
 
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("--enable-preview")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs("--enable-preview")
 }
