@@ -1,3 +1,5 @@
+persistence/
+_ignored_/
 
 # Created by https://www.gitignore.io/api/git,java,sonar,gradle,angular,java-web,sonarqube,intellij+all
 # Edit at https://www.gitignore.io/?templates=git,java,sonar,gradle,angular,java-web,sonarqube,intellij+all

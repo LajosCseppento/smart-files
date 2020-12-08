@@ -15,12 +15,4 @@ class SmartFilesApplicationTest {
         // no-op
     }
 
-    @Test
-    void testJacksonMapperCreation() {
-        JsonMapper.builder()
-                .addModule(new JavaTimeModule())
-                .addModule(new Jdk8Module())
-                .addModule(new GuavaModule());
-    }
-
 }

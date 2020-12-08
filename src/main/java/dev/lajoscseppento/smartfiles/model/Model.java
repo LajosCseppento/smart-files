@@ -1,22 +1,17 @@
 package dev.lajoscseppento.smartfiles.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.collect.ImmutableSortedSet;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
-import java.util.Objects;
-
+@Value
+@EqualsAndHashCode(cacheStrategy = EqualsAndHashCode.CacheStrategy.LAZY)
+@Builder
+@Jacksonized
 public class Model {
 
-    private final ImmutableSortedSet<DirectoryInfo> roots;
-
-    @JsonCreator
-    public Model(ImmutableSortedSet<DirectoryInfo> roots) {
-        Objects.requireNonNull(roots, "roots");
-        this.roots = roots;
-    }
-
-    public ImmutableSortedSet<DirectoryInfo> getRoots() {
-        return roots;
-    }
+    @NonNull
+    @Singular
+    private ImmutableSortedSet<DirectoryInfo> roots;
 
 }

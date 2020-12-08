@@ -2,18 +2,20 @@ plugins {
     java
     jacoco
     idea
-    id("org.springframework.boot") version "2.3.3.RELEASE"
+    id("org.springframework.boot") version "2.3.5.RELEASE"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
 }
 
 group = "dev.lajoscseppento.smart-files"
 version = "0.1.0-SNAPSHOT"
 
-val guavaVersion = "29.0-jre"
+val lombokVersion = "1.18.16"
+val guavaVersion = "30.0-jre"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
 }
 
 repositories {
@@ -29,6 +31,12 @@ repositories {
 //}
 
 dependencies {
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
+    testCompileOnly("org.projectlombok:lombok:$lombokVersion")
+    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+
     implementation("com.google.guava:guava:$guavaVersion")
     implementation("io.projectreactor:reactor-core")
 
@@ -46,18 +54,9 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("io.projectreactor:reactor-test")
-}
-
-
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("--enable-preview")
+    testImplementation("com.google.jimfs:jimfs:1.1")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    jvmArgs("--enable-preview")
-}
-
-tasks.withType<JavaExec> {
-    jvmArgs("--enable-preview")
 }

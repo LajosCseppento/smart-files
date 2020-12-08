@@ -1,49 +1,58 @@
 package dev.lajoscseppento.smartfiles.scanner;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.MapperBuilder;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import reactor.core.publisher.Flux;
+import dev.lajoscseppento.smartfiles.model.DirectoryInfo;
+import dev.lajoscseppento.smartfiles.model.FileInfo;
+import dev.lajoscseppento.smartfiles.service.ErrorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
 
+@SpringBootConfiguration
+@Import({DirectoryScanner.class, ErrorService.class})
 public class DirectoryScannerDemo {
 
-    public static void main(String[] args) throws Exception {
-        DirectoryScanner scanner = new DirectoryScanner();
-        Path directory = Paths.get("E://Photos");
-        Flux<DirectoryScannerResult> scanned = scanner.scan(directory);
+    private static final Path DIRECTORY = Paths.get(System.getProperty("java.io.tmpdir"));
+//    private static final Path DIRECTORY = Paths.get("/tmp/i/do/not/exist"); // non-existent DIRECTORY
+//    private static final Path DIRECTORY = Paths.get("C:\\System Volume Information"); // not accessible Windows DIRECTORY
 
-        List<DirectoryScannerResult> results = new LinkedList<>();
-        scanned.doOnNext(result -> results.add(result)).blockLast();
-        System.out.println(results.size());
+    @Autowired
+    private DirectoryScanner directoryScanner;
 
-        System.out.println(results.get(0).toString());
-        System.out.println(results.get(0).name());
+    @Bean
+    public CommandLineRunner commandLineRunner() {
+        return args -> demo();
+    }
 
-        ObjectMapper mapper = JsonMapper.builder()
-                .addModule(new ParameterNamesModule())
-                .addModule(new JavaTimeModule())
-                .addModule(new Jdk8Module())
-                .addModule(new GuavaModule())
-                .build();
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(DirectoryScannerDemo.class)
+                .web(WebApplicationType.NONE)
+                .run(args);
+    }
 
-        Path jsonFile = Paths.get("photos.json");
-        mapper.writeValue(jsonFile.toFile(), results);
+    private void demo() {
+        DirectoryInfo root = directoryScanner.scan(DIRECTORY);
 
-        List<DirectoryScannerResult> read = mapper.readValue(jsonFile.toFile(), new TypeReference<List<DirectoryScannerResult>>() {
-        });
+        System.out.printf("%s%n", DIRECTORY);
+        print(root, "  ");
+        System.out.println();
+    }
 
-        System.out.println(results.equals(read));
+    private static void print(DirectoryInfo parentDir, String indent) {
+        for (DirectoryInfo dir : parentDir.getDirectories()) {
+            System.out.printf("%s%s%n", indent, dir.getName());
+            print(dir, indent + "  ");
+        }
+
+        for (FileInfo file : parentDir.getFiles()) {
+            System.out.printf("%s%s%n", indent, file.getName());
+        }
     }
 
 }

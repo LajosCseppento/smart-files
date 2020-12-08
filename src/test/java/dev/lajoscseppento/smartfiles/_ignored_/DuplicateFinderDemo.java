@@ -1,11 +1,6 @@
-package dev.lajoscseppento.smartfiles;
+package dev.lajoscseppento.smartfiles._ignored_;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -13,6 +8,7 @@ import dev.lajoscseppento.smartfiles.model.DirectoryInfo;
 import dev.lajoscseppento.smartfiles.model.FileInfo;
 import dev.lajoscseppento.smartfiles.model.ItemInfo;
 import dev.lajoscseppento.smartfiles.model.Model;
+import dev.lajoscseppento.smartfiles.util.Utils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,15 +19,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DuplicateFinderDemo {
 
     public static void main(String[] args) throws Exception {
-        Path modelFile = Paths.get("model.json");
+        Path modelFile = Paths.get("persistence/model.json");
 
 
-        ObjectMapper mapper = JsonMapper.builder()
-                .addModule(new ParameterNamesModule())
-                .addModule(new JavaTimeModule())
-                .addModule(new Jdk8Module())
-                .addModule(new GuavaModule())
-                .build();
+        ObjectMapper mapper = Utils.createObjectMapper();
 
 
         Model model = mapper.readValue(modelFile.toFile(), Model.class);
@@ -56,7 +47,7 @@ public class DuplicateFinderDemo {
         for (DirectoryInfo directory : directories) {
             acc.put(contentHash(directory), directory);
 
-            collectHashes(directory.directories(), acc);
+            collectHashes(directory.getDirectories(), acc);
         }
     }
 
@@ -69,14 +60,14 @@ public class DuplicateFinderDemo {
         if (hash == null) {
             long result = 1;
 
-            for (DirectoryInfo directory : directoryInfo.directories()) {
-                result = 31 * result + directory.name().hashCode();
+            for (DirectoryInfo directory : directoryInfo.getDirectories()) {
+                result = 31 * result + directory.getName().hashCode();
                 result = 31 * result + contentHash(directory);
             }
 
-            for (FileInfo file : directoryInfo.files()) {
-                result = 31 * result + file.name().hashCode();
-                result = 31 * result + file.size();
+            for (FileInfo file : directoryInfo.getFiles()) {
+                result = 31 * result + file.getName().hashCode();
+                result = 31 * result + file.getSize();
             }
 
             hashes.put(directoryInfo, result);
